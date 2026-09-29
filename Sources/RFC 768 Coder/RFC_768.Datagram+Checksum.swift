@@ -1,6 +1,6 @@
-public import Byte
+import Byte
 public import RFC_768
-import Binary_Serializable
+import Binary
 
 extension RFC_768.Datagram {
 
