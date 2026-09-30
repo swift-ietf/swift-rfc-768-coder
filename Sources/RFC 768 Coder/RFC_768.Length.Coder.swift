@@ -41,5 +41,3 @@ extension RFC_768.Length {
 
     public static var coder: Coder<ArraySlice<Byte>, [Byte]> { .init() }
 }
-
-extension RFC_768.Length: Coder.Codable {}

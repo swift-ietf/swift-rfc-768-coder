@@ -35,5 +35,3 @@ extension RFC_768.Port {
 
     public static var coder: Coder<ArraySlice<Byte>, [Byte]> { .init() }
 }
-
-extension RFC_768.Port: Coder.Codable {}

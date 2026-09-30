@@ -49,5 +49,3 @@ extension RFC_768.Datagram {
 
     public static var coder: Coder<ArraySlice<Byte>, [Byte]> { .init() }
 }
-
-extension RFC_768.Datagram: Coder.Codable {}

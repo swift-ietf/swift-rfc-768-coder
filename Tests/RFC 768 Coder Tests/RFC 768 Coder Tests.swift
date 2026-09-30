@@ -53,15 +53,21 @@ extension `RFC 768 Coder Tests`.`Port Tests` {
 
     @Test
     func `writes two network-order bytes`() throws {
-        #expect(try RFC_768.Port(8080).encoded() == bytes(0x1F, 0x90))
-        #expect(try RFC_768.Port.dns.encoded() == bytes(0x00, 0x35))
+        var bytes55: [Byte] = []
+        try RFC_768.Port.coder.serialize(RFC_768.Port(8080), into: &bytes55)
+        #expect(bytes55 == bytes(0x1F, 0x90))
+        var bytes56: [Byte] = []
+        try RFC_768.Port.coder.serialize(RFC_768.Port.dns, into: &bytes56)
+        #expect(bytes56 == bytes(0x00, 0x35))
     }
 
     @Test
     func `round-trips`() throws {
         let port = RFC_768.Port(50000)
-        var input = try port.encoded()[...]
-        #expect(try RFC_768.Port(decoding: &input) == port)
+        var bytes62: [Byte] = []
+        try RFC_768.Port.coder.serialize(port, into: &bytes62)
+        var input = bytes62[...]
+        #expect(try RFC_768.Port.coder.parse(&input) == port)
         #expect(input.isEmpty)
     }
 }
@@ -105,10 +111,14 @@ extension `RFC 768 Coder Tests`.`Length Tests` {
     @Test
     func `round-trips`() throws {
         let length = try RFC_768.Length(1500)
-        #expect(try length.encoded() == bytes(0x05, 0xDC))
+        var bytes107: [Byte] = []
+        try RFC_768.Length.coder.serialize(length, into: &bytes107)
+        #expect(bytes107 == bytes(0x05, 0xDC))
 
-        var input = try length.encoded()[...]
-        #expect(try RFC_768.Length(decoding: &input) == length)
+        var bytes109: [Byte] = []
+        try RFC_768.Length.coder.serialize(length, into: &bytes109)
+        var input = bytes109[...]
+        #expect(try RFC_768.Length.coder.parse(&input) == length)
     }
 }
 
@@ -141,10 +151,14 @@ extension `RFC 768 Coder Tests`.`Checksum Tests` {
     @Test
     func `round-trips`() throws {
         let checksum = RFC_768.Checksum(rawValue: 0xBD52)
-        #expect(try checksum.encoded() == bytes(0xBD, 0x52))
+        var bytes143: [Byte] = []
+        try RFC_768.Checksum.coder.serialize(checksum, into: &bytes143)
+        #expect(bytes143 == bytes(0xBD, 0x52))
 
-        var input = try checksum.encoded()[...]
-        #expect(try RFC_768.Checksum(decoding: &input) == checksum)
+        var bytes145: [Byte] = []
+        try RFC_768.Checksum.coder.serialize(checksum, into: &bytes145)
+        var input = bytes145[...]
+        #expect(try RFC_768.Checksum.coder.parse(&input) == checksum)
     }
 
     @Test
@@ -271,7 +285,9 @@ extension `RFC 768 Coder Tests`.`Header Tests` {
             length: try .init(20),
             checksum: RFC_768.Checksum(rawValue: 0xABCD)
         )
-        #expect(try header.encoded() == bytes(0x30, 0x39, 0x00, 0x35, 0x00, 0x14, 0xAB, 0xCD))
+        var bytes273: [Byte] = []
+        try RFC_768.Header.coder.serialize(header, into: &bytes273)
+        #expect(bytes273 == bytes(0x30, 0x39, 0x00, 0x35, 0x00, 0x14, 0xAB, 0xCD))
     }
 
     @Test
@@ -283,8 +299,10 @@ extension `RFC 768 Coder Tests`.`Header Tests` {
             checksum: RFC_768.Checksum(rawValue: 0xABCD)
         )
 
-        var input = try original.encoded()[...]
-        #expect(try RFC_768.Header(decoding: &input) == original)
+        var bytes285: [Byte] = []
+        try RFC_768.Header.coder.serialize(original, into: &bytes285)
+        var input = bytes285[...]
+        #expect(try RFC_768.Header.coder.parse(&input) == original)
     }
 
     @Test
@@ -347,8 +365,10 @@ extension `RFC 768 Coder Tests`.`Datagram Tests` {
             destination: .syslog,
             data: bytes(0xDE, 0xAD, 0xBE, 0xEF)
         )
+        var bytes350: [Byte] = []
+        try RFC_768.Datagram.coder.serialize(datagram, into: &bytes350)
         #expect(
-            try datagram.encoded() == bytes(
+            bytes350 == bytes(
                 0x1F, 0x90,
                 0x02, 0x02,
                 0x00, 0x0C,
@@ -366,8 +386,10 @@ extension `RFC 768 Coder Tests`.`Datagram Tests` {
             data: bytes(0xDE, 0xAD, 0xBE, 0xEF)
         )
 
-        var input = try original.encoded()[...]
-        #expect(try RFC_768.Datagram(decoding: &input) == original)
+        var bytes368: [Byte] = []
+        try RFC_768.Datagram.coder.serialize(original, into: &bytes368)
+        var input = bytes368[...]
+        #expect(try RFC_768.Datagram.coder.parse(&input) == original)
         #expect(input.isEmpty)
     }
 
@@ -399,7 +421,9 @@ extension `RFC 768 Coder Tests`.`Datagram Tests` {
             data: bytes(0xDE, 0xAD, 0xBE, 0xEF)
         )
 
-        var buffer = try original.encoded()
+        var bytes401: [Byte] = []
+        try RFC_768.Datagram.coder.serialize(original, into: &bytes401)
+        var buffer = bytes401
         buffer.removeLast(2)
 
         var input = buffer[...]
@@ -454,7 +478,9 @@ extension `RFC 768 Coder Tests`.`Wire Vector Tests` {
             length: datagram.header.length.rawValue
         )
         #expect(datagram.withChecksum(pseudo: pseudoHeader) == datagram)
-        #expect(try datagram.encoded() == wire)
+        var bytes456: [Byte] = []
+        try RFC_768.Datagram.coder.serialize(datagram, into: &bytes456)
+        #expect(bytes456 == wire)
     }
 
     @Test
@@ -468,7 +494,7 @@ extension `RFC 768 Coder Tests`.`Wire Vector Tests` {
         )
 
         var input = wire[...]
-        let datagram = try RFC_768.Datagram(decoding: &input)
+        let datagram = try RFC_768.Datagram.coder.parse(&input)
 
         let pseudoHeader = RFC_768.PseudoHeader(
             source: try .init("192.168.1.1"),
@@ -483,6 +509,8 @@ extension `RFC 768 Coder Tests`.`Wire Vector Tests` {
         RFC_768.Header.serialize(datagram.header, into: &headerBytes)
 
         #expect(RFC_768.Checksum.verify(pseudo: pseudoBytes, header: headerBytes, data: datagram.data))
-        #expect(try datagram.encoded() == wire)
+        var bytes485: [Byte] = []
+        try RFC_768.Datagram.coder.serialize(datagram, into: &bytes485)
+        #expect(bytes485 == wire)
     }
 }
