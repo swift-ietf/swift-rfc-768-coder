@@ -9,11 +9,11 @@ extension RFC_768.Checksum {
         data: D
     ) -> RFC_768.Checksum
     where
-        P: Swift.Collection,
+        P: Swift::Collection,
         P.Element == Byte,
-        H: Swift.Collection,
+        H: Swift::Collection,
         H.Element == Byte,
-        D: Swift.Collection,
+        D: Swift::Collection,
         D.Element == Byte
     {
         var sum: UInt32 = 0
@@ -35,7 +35,7 @@ extension RFC_768.Checksum {
         return RFC_768.Checksum(rawValue: checksum)
     }
 
-    private static func sumWords<Bytes: Swift.Collection>(
+    private static func sumWords<Bytes: Swift::Collection>(
         _ initial: UInt32,
         bytes: Bytes
     ) -> UInt32 where Bytes.Element == Byte {
@@ -56,11 +56,11 @@ extension RFC_768.Checksum {
         data: D
     ) -> Bool
     where
-        P: Swift.Collection,
+        P: Swift::Collection,
         P.Element == Byte,
-        H: Swift.Collection,
+        H: Swift::Collection,
         H.Element == Byte,
-        D: Swift.Collection,
+        D: Swift::Collection,
         D.Element == Byte
     {
         var sum: UInt32 = 0
