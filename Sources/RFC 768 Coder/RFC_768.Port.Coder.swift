@@ -1,15 +1,14 @@
+import Binary
 public import Byte
 public import Coder
 public import Cursor
-public import RFC_768
-import Binary
 import Parser
+public import RFC_768
 import Serializer
 
 extension RFC_768.Port {
 
     public struct Coder<Input: Cursor.`Protocol`<Byte, Never>, Buffer: RangeReplaceableCollection<Byte>>: Coding {
-
 
         public typealias Output = RFC_768.Port
 

@@ -264,10 +264,14 @@ extension `RFC 768 Coder Tests`.`Header Tests` {
     @Test
     func `reads the eight header bytes`() throws {
         var input = bytes(
-            0x30, 0x39,
-            0x00, 0x35,
-            0x00, 0x14,
-            0x00, 0x00
+            0x30,
+            0x39,
+            0x00,
+            0x35,
+            0x00,
+            0x14,
+            0x00,
+            0x00
         )[...]
         let header = try RFC_768.Header.coder.parse(&input)
         #expect(header.source.rawValue == 12345)
@@ -346,12 +350,21 @@ extension `RFC 768 Coder Tests`.`Pseudo Header Tests` {
         RFC_768.PseudoHeader.serialize(pseudoHeader, into: &buffer)
 
         #expect(
-            buffer == bytes(
-                0xC0, 0xA8, 0x01, 0x01,
-                0xC0, 0xA8, 0x01, 0x02,
-                0x00, 0x11,
-                0x00, 0x0C
-            )
+            buffer
+                == bytes(
+                    0xC0,
+                    0xA8,
+                    0x01,
+                    0x01,
+                    0xC0,
+                    0xA8,
+                    0x01,
+                    0x02,
+                    0x00,
+                    0x11,
+                    0x00,
+                    0x0C
+                )
         )
     }
 }
@@ -368,13 +381,21 @@ extension `RFC 768 Coder Tests`.`Datagram Tests` {
         var bytes350: [Byte] = []
         try RFC_768.Datagram.coder.serialize(datagram, into: &bytes350)
         #expect(
-            bytes350 == bytes(
-                0x1F, 0x90,
-                0x02, 0x02,
-                0x00, 0x0C,
-                0x00, 0x00,
-                0xDE, 0xAD, 0xBE, 0xEF
-            )
+            bytes350
+                == bytes(
+                    0x1F,
+                    0x90,
+                    0x02,
+                    0x02,
+                    0x00,
+                    0x0C,
+                    0x00,
+                    0x00,
+                    0xDE,
+                    0xAD,
+                    0xBE,
+                    0xEF
+                )
         )
     }
 
@@ -396,9 +417,18 @@ extension `RFC 768 Coder Tests`.`Datagram Tests` {
     @Test
     func `stops after the length the header declares`() throws {
         var input = bytes(
-            0x1F, 0x90, 0x02, 0x02, 0x00, 0x0A, 0x00, 0x00,
-            0xDE, 0xAD,
-            0xBE, 0xEF
+            0x1F,
+            0x90,
+            0x02,
+            0x02,
+            0x00,
+            0x0A,
+            0x00,
+            0x00,
+            0xDE,
+            0xAD,
+            0xBE,
+            0xEF
         )[...]
         let datagram = try RFC_768.Datagram.coder.parse(&input)
         #expect(datagram.data == bytes(0xDE, 0xAD))
@@ -456,11 +486,18 @@ extension `RFC 768 Coder Tests`.`Wire Vector Tests` {
     @Test
     func `a name-service query from 10.0.0.1 to 10.0.0.2`() throws {
         let wire = bytes(
-            0x30, 0x39,
-            0x00, 0x35,
-            0x00, 0x0C,
-            0xBB, 0x64,
-            0x00, 0x01, 0x00, 0x00
+            0x30,
+            0x39,
+            0x00,
+            0x35,
+            0x00,
+            0x0C,
+            0xBB,
+            0x64,
+            0x00,
+            0x01,
+            0x00,
+            0x00
         )
 
         var input = wire[...]
@@ -486,11 +523,18 @@ extension `RFC 768 Coder Tests`.`Wire Vector Tests` {
     @Test
     func `a syslog datagram from 192.168.1.1 to 192.168.1.2`() throws {
         let wire = bytes(
-            0x1F, 0x90,
-            0x02, 0x02,
-            0x00, 0x0C,
-            0xBD, 0x52,
-            0xDE, 0xAD, 0xBE, 0xEF
+            0x1F,
+            0x90,
+            0x02,
+            0x02,
+            0x00,
+            0x0C,
+            0xBD,
+            0x52,
+            0xDE,
+            0xAD,
+            0xBE,
+            0xEF
         )
 
         var input = wire[...]
